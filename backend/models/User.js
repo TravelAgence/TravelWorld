@@ -16,12 +16,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
     photo: {
       type: String,
     },
-
-     role: {
+    role: {
       type: String,
       enum: ["admin", "client", "user"],
       default: "user",
@@ -30,7 +28,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    activationCode : String,
+    activationCode: String,
   },
   { timestamps: true }
 );

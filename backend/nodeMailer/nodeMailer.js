@@ -1,6 +1,6 @@
+// filepath: /C:/Users/yassine/Desktop/WORK25/TravelWorld/backend/nodeMailer/nodeMailer.js
 import nodeMailer from 'nodemailer';
 
-// Create a transporter object to send emails using Gmail service 
 const transporter = nodeMailer.createTransport({
     service: "Gmail",
     auth: {
@@ -9,7 +9,6 @@ const transporter = nodeMailer.createTransport({
     },
 });
 
-// Send email to user with activation code to activate account 
 export const sendEmail = async (email, activationCode) => {
     try {
         await transporter.sendMail({
@@ -33,7 +32,7 @@ export const sendEmail = async (email, activationCode) => {
                                     <div class="card-body">
                                         <p>Dear User,</p>
                                         <p>Thank you for registering. Please click the link below to activate your account:</p>
-                                        <a href="http://localhost:3000/api/auth/activate/${activationCode}" class="btn btn-primary">Activate Account</a>
+                                        <a href="http://localhost:3000/account-activation/${activationCode}" class="btn btn-primary">Activate Account</a>
                                         <p>If you did not request this, please ignore this email.</p>
                                         <p>Best regards,<br>Travel Agency Team</p>
                                     </div>
@@ -49,7 +48,6 @@ export const sendEmail = async (email, activationCode) => {
         console.log(err);
     }
 };
-
 // Send email to user confirming visa request submission
 export const sendVisaConfirmationEmail = async (email, message) => {
     try {

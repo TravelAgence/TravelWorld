@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+
 
 import userRoute from './routes/users.js';
 import authRoute from "./routes/auth.js"; // ✅ Correct Import
@@ -35,6 +37,7 @@ const connect = async () => {
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 // Routes
 app.use("/api/v1/users", userRoute);
