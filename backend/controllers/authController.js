@@ -81,7 +81,7 @@ export const register = async (req, res) => {
 
 
 
-  // verify email
+  // verify email   when i recive the mail
 
 export const verifyUser = async (req, res) => {
   User.find({activationCode: req.params.activationCode})
