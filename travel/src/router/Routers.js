@@ -14,6 +14,7 @@ import {
 import Home2 from "../components/AdminDashboard/pages/home/Home";
 import About from '../pages/About/About'
 import Tours from "../pages/Tours";
+import AccountActivation from "../components/auth/AcountActivation";
 const Router = () => {
   return (
     <Routes>
@@ -24,6 +25,8 @@ const Router = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/about" element={<About />} />
       <Route path="/tours" element={<Tours />} />
+      <Route path="/account-activation/:activationCode" element={<AccountActivation />} />
+
 
       <Route path="/admin">
         <Route index element={<Home2 />} />
