@@ -11,6 +11,7 @@ import Home2 from "../components/AdminDashboard/pages/home/Home";
 import About from "../pages/About/About";
 import Tours from "../pages/Tours";
 import ProtectedRoute from "../context/ProtectedRoute"; // Import ProtectedRoute
+import AccountActivation from "../components/auth/AcountActivation";
 
 const Router = () => {
   return (
@@ -22,6 +23,9 @@ const Router = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/about" element={<About />} />
       <Route path="/tours" element={<Tours />} />
+      <Route path="/account-activation/:activationCode" element={<AccountActivation/>} />
+
+
 
       {/* Protected admin routes */}
       <Route path="/admin" element={<ProtectedRoute><Home2 /></ProtectedRoute>} />
