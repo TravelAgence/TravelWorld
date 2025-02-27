@@ -1,33 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import axios from './axios'; // Custom Axios instance
-import './datatable.scss'; // Importing styles
+import axios from './axios';
+import './datatable.scss';
+import UpdateUserModal from './UpdateUserModal';
+import { Link } from 'react-router-dom';
 
 const Datatable = () => {
-  const [data, setData] = useState([]); // Ensure state starts as an empty array
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('/users/');
+      if (response.data && Array.isArray(response.data.data)) {
+        setData(response.data.data);
+      } else {
+        setData([]);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setError('Failed to fetch users');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('/users/');
-        console.log('Fetched users:', response.data); // Debugging API response
-
-        // Ensure we always set an array
-        if (response.data && Array.isArray(response.data.data)) {
-          setData(response.data.data);
-        } else {
-          setData([]); // Fallback to empty array
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        setError('Failed to fetch users');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
   }, []);
 
@@ -40,10 +41,32 @@ const Datatable = () => {
     }
   };
 
+  const handleView = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleUpdate = () => {
+    fetchUsers(); // Refetch users after update
+  };
+
   const userColumns = [
     { field: '_id', headerName: 'ID', width: 220 },
     { field: 'username', headerName: 'Username', width: 150 },
     { field: 'email', headerName: 'Email', width: 200 },
+    {
+      field: 'photo',
+      headerName: 'Photo',
+      width: 150,
+      renderCell: (params) => (
+        <img
+          src={params.value}
+          alt="User"
+          style={{ width: '50px', height: '50px', borderRadius: '50%' }}
+        />
+      ),
+    },
+    { field: 'role', headerName: 'Role', width: 150 }, // Added role column
     { field: 'activationCode', headerName: 'Activation Code', width: 200 },
     {
       field: 'isActive',
@@ -61,8 +84,12 @@ const Datatable = () => {
       width: 150,
       renderCell: (params) => (
         <div className="cellAction">
-          <button className="viewButton">View</button>
-          <button className="deleteButton" onClick={() => handleDelete(params.row._id)}>Delete</button>
+          <button className="viewButton" onClick={() => handleView(params.row)}>
+            View
+          </button>
+          <button className="deleteButton" onClick={() => handleDelete(params.row._id)}>
+            Delete
+          </button>
         </div>
       ),
     },
@@ -75,16 +102,25 @@ const Datatable = () => {
     <div className="datatable">
       <div className="datatableTitle">
         User List
-        <a href="/add-user" className="link">Add New</a>
+        <Link to="/admin/users/new" className="link">
+          Add New
+        </Link>
       </div>
       <DataGrid
-        rows={data} // Ensured this is always an array
+        rows={data}
         columns={userColumns}
         pageSize={9}
         rowsPerPageOptions={[9]}
         checkboxSelection
-        getRowId={(row) => row._id} // Ensure unique row ID
+        getRowId={(row) => row._id}
       />
+      {isModalOpen && (
+        <UpdateUserModal
+          user={selectedUser}
+          onClose={() => setIsModalOpen(false)}
+          onUpdate={handleUpdate}
+        />
+      )}
     </div>
   );
 };
