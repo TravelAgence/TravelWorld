@@ -11,7 +11,7 @@ import Home2 from "../components/AdminDashboard/pages/home/Home";
 import About from "../pages/About/About";
 import Tours from "../pages/Tours";
 import ProtectedRoute from "../context/ProtectedRoute"; // Import ProtectedRoute
-import AccountActivation from "../components/auth/AcountActivation";
+import AccountActivation from "../components/auth/AcountActivation.jsx";
 
 const Router = () => {
   return (
