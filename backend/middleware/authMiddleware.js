@@ -1,18 +1,18 @@
-import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import jwt from 'jsonwebtoken';
 
-export const verifyToken = async (req, res, next) => {
-  const token = req.cookies.accessToken || req.headers["authorization"];
+export const verifyToken = (req, res, next) => {
+  const token = req.cookies.accessToken || req.headers['authorization'];
 
   if (!token) {
-    return res.status(401).json({ message: "Access denied. No token provided." });
+    return res.status(401).json({ success: false, message: 'You are not authorized' });
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    req.user = await User.findById(decoded.id).select("-password");
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
+    if (err) {
+      return res.status(401).json({ success: false, message: 'Token is invalid' });
+    }
+    req.user = user;
     next();
-  } catch (err) {
-    res.status(400).json({ message: "Invalid token." });
-  }
+  });
 };
+
