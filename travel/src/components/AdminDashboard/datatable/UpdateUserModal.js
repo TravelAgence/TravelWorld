@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from './axios';
 import { Modal, Button, Form } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 const UpdateUserModal = ({ user, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -34,37 +35,42 @@ const UpdateUserModal = ({ user, onClose, onUpdate }) => {
     setUploading(true);
 
     try {
-      let photoUrl = formData.photo;
+      const data = new FormData();
 
-      // If a new file is selected, upload it to Cloudinary
+      // Append form fields
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
+
+      // Append image file (use correct field name: 'photo')
       if (selectedFile) {
-        const formDataCloudinary = new FormData();
-        formDataCloudinary.append('file', selectedFile);
-        formDataCloudinary.append('upload_preset', 'users'); // Replace with your Cloudinary upload preset
-
-        const response = await axios.post(
-          `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
-          formDataCloudinary
-        );
-
-        photoUrl = response.data.secure_url; // Get the uploaded image URL
+        data.append("photo", selectedFile);
       }
 
-      // Update the user with the new data and new photo URL if uploaded
+      // Update the user with the new data
       const token = localStorage.getItem('token'); // Get the token from local storage
-      await axios.put(`/users/${user._id}`, {
-        ...formData,
-        photo: photoUrl, // Include the new photo URL here
-      }, {
+      await axios.put(`/users/${user._id}`, data, {
         headers: {
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}` // Include the token in the request headers
         }
+      });
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Succès',
+        text: 'Utilisateur mis à jour avec succès!',
       });
 
       onUpdate(); // Trigger update in parent component
       onClose(); // Close the modal
     } catch (error) {
       console.error('Error updating user:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Échec de la mise à jour de l\'utilisateur.',
+      });
     } finally {
       setUploading(false);
     }
@@ -73,12 +79,12 @@ const UpdateUserModal = ({ user, onClose, onUpdate }) => {
   return (
     <Modal show={true} onHide={onClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Update User</Modal.Title>
+        <Modal.Title>Mettre à jour l'utilisateur</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="username">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>Nom d'utilisateur</Form.Label>
             <Form.Control
               type="text"
               name="username"
@@ -100,7 +106,7 @@ const UpdateUserModal = ({ user, onClose, onUpdate }) => {
           </Form.Group>
 
           <Form.Group controlId="password">
-            <Form.Label>Password (leave blank to keep current)</Form.Label>
+            <Form.Label>Mot de passe (laisser vide pour conserver l'actuel)</Form.Label>
             <Form.Control
               type="password"
               name="password"
@@ -110,7 +116,7 @@ const UpdateUserModal = ({ user, onClose, onUpdate }) => {
           </Form.Group>
 
           <Form.Group controlId="photo">
-            <Form.Label>Profile Photo</Form.Label>
+            <Form.Label>Photo de profil</Form.Label>
             <Form.Control
               type="file"
               name="photo"
@@ -121,7 +127,7 @@ const UpdateUserModal = ({ user, onClose, onUpdate }) => {
               <div className="mt-2">
                 <img
                   src={formData.photo}
-                  alt="Current Profile"
+                  alt="Profil actuel"
                   style={{ width: '50px', height: '50px', borderRadius: '50%' }}
                 />
               </div>
@@ -129,7 +135,7 @@ const UpdateUserModal = ({ user, onClose, onUpdate }) => {
           </Form.Group>
 
           <Form.Group controlId="role">
-            <Form.Label>Role</Form.Label>
+            <Form.Label>Rôle</Form.Label>
             <Form.Control
               as="select"
               name="role"
@@ -139,7 +145,7 @@ const UpdateUserModal = ({ user, onClose, onUpdate }) => {
             >
               <option value="admin">Admin</option>
               <option value="client">Client</option>
-              <option value="user">User</option>
+              <option value="user">Utilisateur</option>
             </Form.Control>
           </Form.Group>
 
@@ -147,14 +153,14 @@ const UpdateUserModal = ({ user, onClose, onUpdate }) => {
             <Form.Check
               type="checkbox"
               name="isActive"
-              label="Active"
+              label="Actif"
               checked={formData.isActive}
               onChange={handleChange}
             />
           </Form.Group>
 
           <Form.Group controlId="activationCode">
-            <Form.Label>Activation Code</Form.Label>
+            <Form.Label>Code d'activation</Form.Label>
             <Form.Control
               type="text"
               name="activationCode"
@@ -164,10 +170,10 @@ const UpdateUserModal = ({ user, onClose, onUpdate }) => {
           </Form.Group>
 
           <Button variant="primary" type="submit" disabled={uploading}>
-            {uploading ? 'Uploading...' : 'Update'}
+            {uploading ? 'Téléchargement...' : 'Mettre à jour'}
           </Button>
           <Button variant="secondary" onClick={onClose} className="ms-2">
-            Cancel
+            Annuler
           </Button>
         </Form>
       </Modal.Body>

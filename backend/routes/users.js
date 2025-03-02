@@ -1,18 +1,12 @@
 import express from 'express';
 import { createUser, getAllUsers, deleteUser, updateUser } from '../controllers/userController.js';
+import upload from '../config/multerConfig.js';
 
 const router = express.Router();
 
-// Create a new user (Admin only)
-router.post('/',  createUser);
-
-// Get all users (Admin only)
-router.get('/',  getAllUsers);
-
-// Delete a user (Admin only)
-router.delete('/:id',  deleteUser);
-
-// Update a user (Admin only)
-router.put('/:id',  updateUser);
+router.post("/create", upload.single("photo"), createUser);
+router.get('/', getAllUsers);
+router.delete('/:id', deleteUser);
+router.put('/:id', upload.single("photo"), updateUser); // Ensure the upload middleware is used for updating the photo
 
 export default router;

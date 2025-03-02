@@ -12,6 +12,8 @@ import hotelRoutes from "./routes/hotel.js"; // ✅ Correct Import
 
 import visaRoutes from "./routes/visaRoutes.js"; // ✅ Correct Import
 
+import rooms from "./routes/rooms.js"; // ✅ Correct Import
+
 
 dotenv.config();
 const app = express();
@@ -44,6 +46,7 @@ app.use("/api/v1/users", userRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/hotels", hotelRoutes); // ✅ Correct Route
 app.use("/api/v1", visaRoutes);
+app.use("/api/v1/rooms", rooms);
 
 
 // ✅ Start Server *Only After* DB is Connected
