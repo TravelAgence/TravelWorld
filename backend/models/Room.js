@@ -1,12 +1,7 @@
 import mongoose from "mongoose";
-
-const roomSchema = new mongoose.Schema(
+const RoomSchema = new mongoose.Schema(
   {
-    number: {
-      type: Number,
-      required: true,
-    },
-    type: {
+    title: {
       type: String,
       required: true,
     },
@@ -14,17 +9,17 @@ const roomSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    description: {
-      type: String,
-    },
-    hotel: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Hotel",
+    maxPeople: {
+      type: Number,
       required: true,
     },
+    desc: {
+      type: String,
+      required: true,
+    },
+    roomNumbers: [{ number: Number, unavailableDates: {type: [Date]}}],
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Room", roomSchema);
-//
+export default mongoose.model("Room", RoomSchema);

@@ -5,6 +5,7 @@ import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUpload
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const New = ({ title }) => {
   const [file, setFile] = useState(null);
@@ -44,10 +45,21 @@ const New = ({ title }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
+      Swal.fire({
+        icon: 'success',
+        title: 'Succès',
+        text: 'Utilisateur créé avec succès!',
+      });
+
       navigate("/admin/users"); // Redirect on success
     } catch (error) {
       console.error("❌ Error creating user:", error);
-      setError("Failed to create user. Please try again.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Échec de la création de l\'utilisateur. Veuillez réessayer.',
+      });
+      setError("Échec de la création de l'utilisateur. Veuillez réessayer.");
     }
   };
 
@@ -87,11 +99,11 @@ const New = ({ title }) => {
 
               {/* Username Field */}
               <div className="formInput">
-                <label>Username</label>
+                <label>Nom d'utilisateur</label>
                 <input
                   type="text"
                   name="username"
-                  placeholder="Enter username"
+                  placeholder="Entrez le nom d'utilisateur"
                   onChange={handleInputChange}
                   required
                 />
@@ -103,7 +115,7 @@ const New = ({ title }) => {
                 <input
                   type="email"
                   name="email"
-                  placeholder="Enter email"
+                  placeholder="Entrez l'email"
                   onChange={handleInputChange}
                   required
                 />
@@ -111,11 +123,11 @@ const New = ({ title }) => {
 
               {/* Password Field */}
               <div className="formInput">
-                <label>Password</label>
+                <label>Mot de passe</label>
                 <input
                   type="password"
                   name="password"
-                  placeholder="Enter password"
+                  placeholder="Entrez le mot de passe"
                   onChange={handleInputChange}
                   required
                 />
@@ -123,9 +135,9 @@ const New = ({ title }) => {
 
               {/* Role Selection */}
               <div className="formInput">
-                <label>Role</label>
+                <label>Rôle</label>
                 <select name="role" onChange={handleInputChange} required>
-                  <option value="user">User</option>
+                  <option value="user">Utilisateur</option>
                   <option value="client">Client</option>
                   <option value="admin">Admin</option>
                 </select>
@@ -135,7 +147,7 @@ const New = ({ title }) => {
               {error && <p className="error">{error}</p>}
 
               {/* Submit Button */}
-              <button type="submit">Create User</button>
+              <button type="submit">Créer l'utilisateur</button>
             </form>
           </div>
         </div>

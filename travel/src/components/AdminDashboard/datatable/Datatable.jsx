@@ -4,6 +4,7 @@ import axios from './axios';
 import './datatable.scss';
 import UpdateUserModal from './UpdateUserModal';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const Datatable = () => {
   const [data, setData] = useState([]);
@@ -22,7 +23,7 @@ const Datatable = () => {
       }
     } catch (error) {
       console.error('Error fetching users:', error);
-      setError('Failed to fetch users');
+      setError('Échec de la récupération des utilisateurs');
     } finally {
       setLoading(false);
     }
@@ -33,12 +34,35 @@ const Datatable = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    try {
-      await axios.delete(`/users/${id}`);
-      setData((prevData) => prevData.filter((item) => item._id !== id));
-    } catch (error) {
-      console.error('Error deleting user:', error);
-    }
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: "Vous ne pourrez pas annuler cela!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, supprimez-le!',
+      cancelButtonText: 'Annuler'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`/users/${id}`);
+          setData((prevData) => prevData.filter((item) => item._id !== id));
+          Swal.fire(
+            'Supprimé!',
+            'L\'utilisateur a été supprimé.',
+            'success'
+          );
+        } catch (error) {
+          console.error('Error deleting user:', error);
+          Swal.fire(
+            'Erreur!',
+            'Échec de la suppression de l\'utilisateur.',
+            'error'
+          );
+        }
+      }
+    });
   };
 
   const handleView = (user) => {
@@ -52,7 +76,7 @@ const Datatable = () => {
 
   const userColumns = [
     { field: '_id', headerName: 'ID', width: 220 },
-    { field: 'username', headerName: 'Username', width: 150 },
+    { field: 'username', headerName: 'Nom d\'utilisateur', width: 150 },
     { field: 'email', headerName: 'Email', width: 200 },
     {
       field: 'photo',
@@ -66,15 +90,15 @@ const Datatable = () => {
         />
       ),
     },
-    { field: 'role', headerName: 'Role', width: 150 }, // Added role column
-    { field: 'activationCode', headerName: 'Activation Code', width: 200 },
+    { field: 'role', headerName: 'Rôle', width: 150 }, // Added role column
+    { field: 'activationCode', headerName: 'Code d\'activation', width: 200 },
     {
       field: 'isActive',
-      headerName: 'Status',
+      headerName: 'Statut',
       width: 150,
       renderCell: (params) => (
         <div className={`cellWithStatus ${params.value ? 'active' : 'passive'}`}>
-          {params.value ? 'Active' : 'Inactive'}
+          {params.value ? 'Actif' : 'Inactif'}
         </div>
       ),
     },
@@ -85,25 +109,25 @@ const Datatable = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <button className="viewButton" onClick={() => handleView(params.row)}>
-            View
+            Voir
           </button>
           <button className="deleteButton" onClick={() => handleDelete(params.row._id)}>
-            Delete
+            Supprimer
           </button>
         </div>
       ),
     },
   ];
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Chargement...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        User List
+        Liste des utilisateurs
         <Link to="/admin/users/new" className="link">
-          Add New
+          Ajouter un nouveau
         </Link>
       </div>
       <DataGrid
