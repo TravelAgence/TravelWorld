@@ -12,6 +12,8 @@ import About from "../pages/About/About";
 import Tours from "../pages/Tours";
 import ProtectedRoute from "../context/ProtectedRoute"; // Import ProtectedRoute
 import AccountActivation from "../components/auth/AcountActivation.jsx";
+import List2 from "../components/AdminDashboard/pages/list/List";
+import HotelList from "../components/AdminDashboard/pages/list/HotelList.jsx";
 
 const Router = () => {
   return (
@@ -32,7 +34,7 @@ const Router = () => {
       <Route path="/admin/users" element={<ProtectedRoute><List /></ProtectedRoute>} />
       <Route path="/admin/users/:userId" element={<ProtectedRoute><Single /></ProtectedRoute>} />
       <Route path="/admin/users/new" element={<ProtectedRoute><New inputs={userInputs} title="Add New User" /></ProtectedRoute>} />
-      <Route path="/admin/products" element={<ProtectedRoute><List /></ProtectedRoute>} />
+      <Route path="/admin/hotels" element={<ProtectedRoute><HotelList /></ProtectedRoute>} /> {/* Map to the List component */}
       <Route path="/admin/products/:productId" element={<ProtectedRoute><Single /></ProtectedRoute>} />
       <Route path="/admin/products/new" element={<ProtectedRoute><New inputs={productInputs} title="Add New Product" /></ProtectedRoute>} />
 

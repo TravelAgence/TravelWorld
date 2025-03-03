@@ -12,26 +12,26 @@ import { verifyAdmin } from "../utils/verifyToken.js";
 const router = express.Router();
 
 // Create a new hotel
-router.post("/creatHotel",verifyAdmin ,createHotel);
+router.post("/creatHotel" ,createHotel);
 
 // Get all hotels
-router.get("/getAllHotel", verifyAdmin , getHotels);
+router.get("/getAllHotel",  getHotels);
 
 // get  hotels by city
-router.get("/countByCity", verifyAdmin, countByCity);
+router.get("/countByCity",  countByCity);
 
 // get  hotels by type 
-router.get("/countByType", verifyAdmin , getHotels);
+router.get("/countByType",  getHotels);
 
 
 // Get a single hotel by ID
-router.get("/getHotelById/:id", verifyAdmin , getHotelById);
+router.get("/getHotelById/:id",  getHotelById);
 
 // Update a hotel by ID
-router.put("/updateHotelById/:id", verifyAdmin , updateHotel);
+router.put("/updateHotelById/:id", updateHotel);
 
 // Delete a hotel by ID
-router.delete("/deleteHotelById/:id", verifyAdmin , deleteHotel);
+router.delete("/deleteHotelById/:id",  deleteHotel);
 
 
 

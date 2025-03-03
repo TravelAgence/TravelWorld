@@ -1,18 +1,18 @@
 import "./list.scss";
 import Sidebar from "../../sidebar/Sidebar";
 import Navbar from "../../navbar/Navbar";
-import Datatable from "../../datatable/Datatable";
+import HotelDatatable from "../../hotel/Hotel"; // Import the HotelDatatable component
 
-const List2 = () => {
+const HotelList = () => {
   return (
     <div className="list">
       <Sidebar />
       <div className="listContainer">
         <Navbar />
-        <Datatable/> 
+        <HotelDatatable /> 
       </div>
     </div>
   );
 };
 
-export default List2;
+export default HotelList;
